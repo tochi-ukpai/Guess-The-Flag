@@ -42,10 +42,7 @@ struct ContentView: View {
                         Button {
                             flagTapped(number)
                         } label: {
-                            Image(countries[number])
-                                .renderingMode(.original)
-                                .clipShape(Capsule())
-                                .shadow(radius: 5)
+                            FlagImage(flagName: countries[number])
                         }
                     }
                 }
@@ -87,6 +84,20 @@ struct ContentView: View {
         correctAnswer = Int.random(in: 0...2)
     }
 }
+
+
+struct FlagImage: View {
+    var flagName: String
+    
+    var body: some View {
+        Image(flagName)
+            .renderingMode(.original)
+            .clipShape(Capsule())
+            .shadow(radius: 5)
+    }
+}
+
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
