@@ -15,6 +15,8 @@ struct ContentView: View {
     @State private var score = 0
     @State private var alertMessage = ""
     
+    @State private var selectedFlag: Int?
+    
     var body: some View {
         ZStack {
             RadialGradient(stops: [
@@ -40,9 +42,14 @@ struct ContentView: View {
                     
                     ForEach(0..<3) { number in
                         Button {
+                            selectedFlag = number
                             flagTapped(number)
                         } label: {
                             FlagImage(flagName: countries[number])
+                                .rotation3DEffect(.degrees(isSelected(flag: number) ? 360 : 0), axis: (x: 0, y: 1, z: 0))
+                                .opacity(isUnselected(flag: number) ? 0.25 : 1)
+                                .scaleEffect(isUnselected(flag: number) ? 0.8 : 1)
+                                .animation(.default, value: selectedFlag)
                         }
                     }
                 }
@@ -71,17 +78,27 @@ struct ContentView: View {
     func flagTapped(_ number: Int) {
         if number == correctAnswer {
             score += 1
-            askQuestion()
+            scoreTitle = "Correct"
+            alertMessage = "Your score is \(score)"
         } else {
             scoreTitle = "Wrong"
             alertMessage = "The selected flag is \(countries[number])"
-            showingScore = true
         }
+        showingScore = true
     }
     
     func askQuestion() {
+        selectedFlag = nil
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    
+    func isSelected(flag number: Int) -> Bool {
+        number == selectedFlag
+    }
+    
+    func isUnselected(flag number: Int) -> Bool {
+        selectedFlag != nil && !isSelected(flag: number)
     }
 }
 
